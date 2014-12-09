@@ -25,17 +25,23 @@ end.process!
 puts "Sending message to #{endpoint} room #{room}" if options[:verbose]
 p options if options[:verbose]
 
-uri = URI.parse("https://#{endpoint}/v2/room/#{room}/notification?auth_token=#{token}")
+color          = options[:color]
+message        = options[:message]
+message_format = options[:format]
+notify         = options[:notify]
+
+#uri = URI.parse("https://#{endpoint}/v2/room/#{room}/notification?auth_token=#{token}")
+uri = URI.parse("https://#{endpoint}/v1/rooms/message?auth_token=#{token}?format=#{message_format}?room_id=#{room}&from=Zabbix&message=#{message}&notify=#{notify}&color=#{color}")
 http = Net::HTTP.new(uri.host, uri.port)
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 request = Net::HTTP::Post.new(uri.request_uri)
-request.body = {
-  "color"          => options[:color],
-  "message"        => options[:message],
-  "message_format" => options[:format],
-  "notify"         => options[:notify],
-}.to_json
-request['Content-Type'] = 'application/json'
+#request.body = {
+#  "color"          => options[:color],
+#  "message"        => options[:message],
+#  "message_format" => options[:format],
+#  "notify"         => options[:notify],
+#}.to_json
+#request['Content-Type'] = 'application/json'
 http.request(request)
